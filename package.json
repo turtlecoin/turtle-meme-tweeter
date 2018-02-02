@@ -1,0 +1,29 @@
+{
+  "name": "trtlmemetweeter",
+  "version": "0.0.1",
+  "description": "bot to scrape trtl memes from discord and tweet em",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "npm test -- -w",
+    "init": "mkdir dist",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean && npm run init",
+    "build": "babel ./src -d ./dist --ignore test.js",
+    "pretest": "npm run build",
+    "test": "mocha --compilers js:babel-core/register ./src/**/*.test.js",
+    "test:single": "mocha --compilers js:babel-core/register"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "author": "BebopTC",
+  "license": "Beerware",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0"
+  }
+}
