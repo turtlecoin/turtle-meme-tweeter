@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "bot to scrape trtl memes from discord and tweet em",
   "scripts": {
+    "run": "babel-node --presets es2015 ./src/index.js",
     "start": "npm run dev",
     "dev": "npm test -- -w",
     "init": "mkdir dist",
@@ -28,6 +29,6 @@
   },
   "dependencies": {
     "discord.js": "^11.3.0",
-    "twitter": "^1.7.1"
+    "twit": "^2.2.9"
   }
 }
