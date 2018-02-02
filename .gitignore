@@ -1,5 +1,6 @@
 # Added by Bebop
 config.js
+dist/
 
 # Created by https://www.gitignore.io/api/vim,node
 
