@@ -1,12 +1,16 @@
-import Twitter from 'twit'
-import Discord from 'discord.js'
+import Twitter      from 'twit'
+import Discord      from 'discord.js'
 
-import config      from './config'
+import request      from 'request'
+import fs           from 'fs'
+import path         from 'path'
 
-const twitter = new Twitter(config.twitter),
-      discord = new Discord.Client(),
-      discordToken = config.discord.token
+import config       from './config'
 
+const twitter       = new Twitter(config.twitter),
+      discord       = new Discord.Client(),
+      discordToken  = config.discord.token,
+      imagePath     = "./tmp/"
 
 discord.on('ready', () => {
   console.log('discord client ready')
@@ -20,19 +24,102 @@ discord.on('ready', () => {
 discord.on('message', message => {
   if (message.channel.name == "memes" && message.attachments && message.attachments.first()) {
     console.log(message.attachments.first())
-    twitter.post('/statuses/update', { status: 'test ' + message.attachments.first().url }, (err, tweet, resp) => {
-      if(!err) {
-        console.log("tweet successful")
-      }
-      else {
-        console.log(err)
-      }
+    let imageFile = path.join(__dirname, imagePath + message.attachments.first().filename)
+    let status = `Submitted by ${message.author.username}. #TRTL #TurtleCoin #Cryptocurrency #Blockchain`
+    downloadImage(message.attachments.first().url, (body) => {
+      writeImage(imageFile, body, () => {
+        uploadMedia(imageFile,(mediaId) => {
+          postMediaTweet(
+            { status, media_ids : [mediaId] },
+            () => {fs.unlinkSync(imageFile)}
+          )
+        } )
+      })
     })
+
+    //    twitter.post('/statuses/update', { status: 'test ' + message.attachments.first().url }, (err, tweet, resp) => {
+    //      if(!err) {
+    //        console.log("tweet successful")
+    //      }
+    //      else {
+    //        console.log(err)
+    //      }
+    //    })
+    //  }
+    //
   }
 })
 
-discord.login(discordToken)
+discord.login(config.discord.token)
 
+const downloadImage = (url, success) => {
+  request.defaults({encoding: null}).get(url, (err, resp, body) => {
+    if(!err) {
+      success(body)
+    }
+    else {
+      console.log(err)
+    }
+  })
+}
+
+const writeImage = (path, data, success) => {
+  fs.writeFile(path, data, (err) => {
+    if(!err) {
+      success()
+    }
+    else {
+      console.log(err)
+    }
+  })
+}
+
+const uploadMedia = (file_path, success) => {
+  twitter.postMediaChunked(
+    { file_path },
+    (err, data, resp) => {
+      const media_id      = data.media_id_string,
+            meta_params   = { media_id }
+
+      if (!err) {
+
+              console.log(media_id)
+              console.log(meta_params)
+              console.log(data)
+              console.log(data.media_id_str)
+        twitter.post(
+          'media/metadata/create',
+          meta_params,
+          (err, data, resp) => {
+            if(!err) {
+              success(media_id)
+            }
+            else {
+              console.log(err)
+            }
+          }
+        )
+      }
+      else {
+        console.log(error)
+      }
+    }
+  )
+}
+
+const postMediaTweet = (statusParams, success) => {
+
+ twitter.post(
+   'statuses/update',
+   statusParams,
+   (err, tweet, resp) => {
+     console.log('tweet successful!')
+     console.log(resp)
+     console.log(tweet)
+       success()
+   }
+ )
+}
 //let params = {
 //  q: '#turtlecoin',
 //  count: 10,
