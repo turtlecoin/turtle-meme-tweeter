@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "discord.js": "^11.3.0",
+    "request": "^2.83.0",
     "twit": "^2.2.9"
   }
 }
