@@ -10,7 +10,8 @@ import config       from './config'
 const twitter       = new Twitter(config.twitter),
       discord       = new Discord.Client(),
       discordToken  = config.discord.token,
-      imagePath     = "./tmp/"
+      imagePath     = "./tmp/",
+      keepImage     = true
 
 discord.on('ready', () => {
   console.log('discord client ready')
@@ -24,14 +25,15 @@ discord.on('ready', () => {
 discord.on('message', message => {
   if (message.channel.name == "memes" && message.attachments && message.attachments.first()) {
     console.log(message.attachments.first())
-    let imageFile = path.join(__dirname, imagePath + message.attachments.first().filename)
+    let imageFile = path.join(__dirname, imagePath + `${message.author.username}-${message.attachments.first().filename}`)
     let status = `Submitted by ${message.author.username}. #TRTL #TurtleCoin #Cryptocurrency #Blockchain`
+
     downloadImage(message.attachments.first().url, (body) => {
       writeImage(imageFile, body, () => {
         uploadMedia(imageFile,(mediaId) => {
           postMediaTweet(
             { status, media_ids : [mediaId] },
-            () => {fs.unlinkSync(imageFile)}
+            () => { if (!keepImage) fs.unlinkSync(imageFile) }
           )
         } )
       })
