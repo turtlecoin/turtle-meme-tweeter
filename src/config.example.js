@@ -8,6 +8,10 @@ const config = {
 
   discord: {
     token : ''
+  },
+
+  memetweeter : {
+    save_images : true
   }
 }
 

@@ -11,7 +11,7 @@ const twitter       = new Twitter(config.twitter),
       discord       = new Discord.Client(),
       discordToken  = config.discord.token,
       imagePath     = "./tmp/",
-      keepImage     = true
+      keepImage     = config.memetweeter.keep_images
 
 discord.on('ready', () => {
   console.log('discord client ready')
@@ -38,17 +38,6 @@ discord.on('message', message => {
         } )
       })
     })
-
-    //    twitter.post('/statuses/update', { status: 'test ' + message.attachments.first().url }, (err, tweet, resp) => {
-    //      if(!err) {
-    //        console.log("tweet successful")
-    //      }
-    //      else {
-    //        console.log(err)
-    //      }
-    //    })
-    //  }
-    //
   }
 })
 
@@ -84,11 +73,6 @@ const uploadMedia = (file_path, success) => {
             meta_params   = { media_id }
 
       if (!err) {
-
-              console.log(media_id)
-              console.log(meta_params)
-              console.log(data)
-              console.log(data.media_id_str)
         twitter.post(
           'media/metadata/create',
           meta_params,
@@ -122,30 +106,3 @@ const postMediaTweet = (statusParams, success) => {
    }
  )
 }
-//let params = {
-//  q: '#turtlecoin',
-//  count: 10,
-//  result_type: 'recent',
-//  lang: 'en'
-//}
-//
-//t.post('/statuses/update', { status: 'test' }, (err, tweet, resp) => {
-//  if(!err) {
-//    console.log(tweet)
-//  }
-//  else {
-//    console.log(err)
-//  }
-//})
-
-//t.get('search/tweets', params, (err, data, resp) => {
-//  if (!err) {
-//    for(let status of data.statuses) {
-//      console.log(status.user.screen_name + " " + status.id_str)
-//    }
-//  }
-//  else {
-//    console.log(err);
-//  }
-//})
-
