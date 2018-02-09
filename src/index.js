@@ -11,7 +11,7 @@ const twitter       = new Twitter(config.twitter),
       discord       = new Discord.Client(),
       discordToken  = config.discord.token,
       imagePath     = "./tmp/",
-      keepImage     = config.memetweeter.keep_images
+      saveImages    = config.memetweeter.save_images
 
 discord.on('ready', () => {
   console.log('discord client ready')
@@ -33,7 +33,7 @@ discord.on('message', message => {
         uploadMedia(imageFile,(mediaId) => {
           postMediaTweet(
             { status, media_ids : [mediaId] },
-            () => { if (!keepImage) fs.unlinkSync(imageFile) }
+            () => { if (!saveImages) { fs.unlinkSync(imageFile) } }
           )
         } )
       })
