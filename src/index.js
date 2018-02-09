@@ -26,7 +26,7 @@ discord.on('message', message => {
   if (message.channel.name == "memes" && message.attachments && message.attachments.first()) {
     console.log(message.attachments.first())
     let imageFile = path.join(__dirname, imagePath + `${message.author.username}-${message.attachments.first().filename}`)
-    let status = `Submitted by ${message.author.username}. #TRTL $TRTL #TurtleCoin #Cryptocurrency #Blockchaini #Finance #Crypto #Money`
+    let status = `Submitted by ${message.author.username}. #TRTL $TRTL #TurtleCoin #Cryptocurrency #Blockchain #Finance #Crypto #Money`
 
     downloadImage(message.attachments.first().url, (body) => {
       writeImage(imageFile, body, () => {
